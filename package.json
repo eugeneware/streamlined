@@ -1,0 +1,37 @@
+{
+  "name": "streamlined",
+  "version": "0.0.1",
+  "description": "Collection of helper streams to deal with mapping/transforming object streams",
+  "main": "index.js",
+  "scripts": {
+    "test": "node_modules/.bin/tape test/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eugeneware/streamlined"
+  },
+  "keywords": [
+    "stream",
+    "streams",
+    "streaming",
+    "map",
+    "reduce",
+    "timeseries",
+    "timestream",
+    "timestreamdb",
+    "transform"
+  ],
+  "author": "Eugene Ware <eugene@noblesamurai.com>",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/eugeneware/streamlined/issues"
+  },
+  "dependencies": {
+    "pathos": "^0.1.0",
+    "through2": "^0.4.1"
+  },
+  "devDependencies": {
+    "redtape": "~0.1.0",
+    "tape": "~2.3.2"
+  }
+}
