@@ -1,4 +1,5 @@
 module.exports = {
+  key: require('./key'),
   count: require('./count'),
   limit: require('./limit'),
   head: require('./limit'),
