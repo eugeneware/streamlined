@@ -3,6 +3,7 @@ module.exports = {
   count: require('./count'),
   limit: require('./limit'),
   head: require('./limit'),
+  tail: require('./tail'),
   distinct: require('./distinct'),
   missing: require('./missing'),
   select: require('./select'),
