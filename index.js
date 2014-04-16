@@ -3,5 +3,6 @@ module.exports = {
   distinct: require('./distinct'),
   missing: require('./missing'),
   select: require('./select'),
-  where: require('./where')
+  where: require('./where'),
+  selelctor: require('./selector')
 };

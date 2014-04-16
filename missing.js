@@ -1,13 +1,14 @@
 var through2 = require('through2'),
-    pathos = require('pathos');
+    selector = require('./selector');
 
 module.exports = missing;
-function missing(path) {
+function missing(selectorExpr) {
   var s = through2.obj(write);
 
-  function write(o, enc, cb) {
-    var data = o.value;
-    var val = pathos.walk(data, path);
+  var locator = selector(selectorExpr);
+
+  function write(data, enc, cb) {
+    var val = locator(data);
     if (typeof val === 'undefined') {
       this.push(data);
     }

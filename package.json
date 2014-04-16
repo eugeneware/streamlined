@@ -28,7 +28,8 @@
   },
   "dependencies": {
     "pathos": "^0.1.0",
-    "through2": "^0.4.1"
+    "through2": "^0.4.1",
+    "jsonquery": "^0.1.3"
   },
   "devDependencies": {
     "redtape": "~0.1.0",

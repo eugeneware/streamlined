@@ -6,8 +6,7 @@ function where(path, needle) {
   var s = through2.obj(write);
   var types = {};
 
-  function write(o, enc, cb) {
-    var data = o.value;
+  function write(data, enc, cb) {
     var val = pathos.walk(data, path);
     if (val === needle) {
       this.push(data);
