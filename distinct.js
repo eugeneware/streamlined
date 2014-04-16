@@ -1,5 +1,5 @@
 var through2 = require('through2'),
-    selector = require('./selector');
+    selector = require('defunct/selector');
 
 module.exports = distinct;
 function distinct(selectorExpr, aggregate) {

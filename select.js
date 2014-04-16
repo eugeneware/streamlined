@@ -1,6 +1,6 @@
 var through2 = require('through2'),
     pathos = require('pathos'),
-    selector = require('./selector');
+    selector = require('defunct/selector');
 
 module.exports = select;
 function select(colExprs, build) {

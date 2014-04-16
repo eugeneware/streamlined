@@ -1,5 +1,4 @@
-var through2 = require('through2'),
-    selector = require('./selector');
+var through2 = require('through2');
 
 module.exports = limit;
 function limit(max) {
@@ -8,7 +7,7 @@ function limit(max) {
   var ended = false;
 
   function write(data, enc, cb) {
-    if (count <= max) {
+    if (count < max) {
       this.push(data);
     }
     count++;
