@@ -1,13 +1,18 @@
 var through2 = require('through2'),
+    pathos = require('pathos'),
     selector = require('./selector');
 
 module.exports = select;
-function select(colExprs) {
+function select(colExprs, build) {
+  if (typeof build === 'undefined') build = false;
+  if (!Array.isArray(colExprs)) {
+    colExprs = [colExprs];
+  }
   var s = through2.obj(write);
 
   var locators = [];
   colExprs.forEach(function (colExpr, i) {
-    var locator = selector(colExpr);
+    var locator = selector(colExpr, build);
     locators[i] = locator;
   });
 
@@ -22,6 +27,9 @@ function select(colExprs) {
     }
 
     if (data.length === colExprs.length) {
+      if (build) {
+        data = pathos.build(data);
+      }
       this.push(data);
     }
 

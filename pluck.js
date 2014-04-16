@@ -1,17 +1,16 @@
 var through2 = require('through2'),
     selector = require('./selector');
 
-module.exports = where;
-function where(selectorExpr, needle) {
+module.exports = pluck;
+function pluck(selectorExpr) {
   var s = through2.obj(write);
-  var types = {};
 
   var locator = selector(selectorExpr);
 
   function write(data, enc, cb) {
     var val = locator(data);
-    if (val === needle) {
-      this.push(data);
+    if (typeof val !== undefined) {
+      this.push(val);
     }
     cb();
   }
