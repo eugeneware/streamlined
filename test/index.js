@@ -100,7 +100,7 @@ it('should be able to tail a stream', 6, function(t, events) {
     });
 });
 
-it('should be able to count disctinct properties', 1, function(t, events) {
+it('should be able to count distinct properties', 1, function(t, events) {
   events
     .pipe(sl.distinct('properties.$browser'))
     .on('data', function (data) {
