@@ -28,6 +28,19 @@ it('should be able to limit a stream', 1, function(t, events) {
     });
 });
 
+it('should be able to head a stream', 1, function(t, events) {
+  var count = 0;
+  events
+    .pipe(sl.head(5))
+    .on('data', function (data) {
+      count++;
+    })
+    .on('end', function () {
+      t.equal(count, 5, 'only 5 events');
+      t.end();
+    });
+});
+
 it('should be able to generate a keystream', 15, function(t, events) {
   events
     .pipe(sl.limit(5))
