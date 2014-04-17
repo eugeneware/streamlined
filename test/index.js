@@ -98,3 +98,28 @@ it('should be able to tail a stream', 6, function(t, events) {
       t.end();
     });
 });
+
+it('should be able to count disctinct properties', 1, function(t, events) {
+  events
+    .pipe(sl.distinct('properties.$browser'))
+    .on('data', function (data) {
+      var expected = {
+        Safari: 156,
+        Firefox: 349,
+        Chrome: 822,
+        'Mobile Safari': 229,
+        'Internet Explorer': 160,
+        'Android Mobile': 76,
+        'Opera Mini': 6,
+        'Chrome iOS': 26,
+        undefined: 2,
+        'Facebook Mobile': 2,
+        Opera: 8,
+        BlackBerry: 2
+      };
+      t.deepEqual(data, expected, 'should get distinct browser counts');
+    })
+    .on('end', function () {
+      t.end();
+    });
+});
