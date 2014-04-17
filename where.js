@@ -11,7 +11,7 @@ function where(selectorExpr, needle) {
   if (typeof selectorExpr === 'object' && selectorExpr !== null &&
       typeof needle === 'undefined') {
     predicate = function (data) {
-      jsonquery.match(data, selectorExpr);
+      return jsonquery.match(data, selectorExpr);
     };
   } else {
     var locator = selector(selectorExpr);
