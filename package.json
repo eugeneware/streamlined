@@ -30,7 +30,7 @@
     "pathos": "^0.1.0",
     "through2": "^0.4.1",
     "jsonquery": "^0.1.3",
-    "defunct": "0.0.1"
+    "defunct": "^0.2.0"
   },
   "devDependencies": {
     "redtape": "~0.1.0",
