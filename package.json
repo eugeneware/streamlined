@@ -33,7 +33,8 @@
     "defunct": "^0.3.0"
   },
   "devDependencies": {
-    "redtape": "~0.1.0",
-    "tape": "~2.3.2"
+    "redtape": "^0.2.1",
+    "tape": "^2.12.3",
+    "JSONStream": "^0.7.2"
   }
 }
