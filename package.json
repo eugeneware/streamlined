@@ -35,6 +35,7 @@
   "devDependencies": {
     "redtape": "^0.2.1",
     "tape": "^2.12.3",
-    "JSONStream": "^0.7.2"
+    "JSONStream": "^0.7.2",
+    "bl": "^0.8.0"
   }
 }

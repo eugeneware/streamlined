@@ -2,6 +2,7 @@ var redtape = require('redtape'),
     fs = require('fs'),
     path = require('path'),
     JSONStream = require('JSONStream'),
+    bl = require('bl'),
     d = require('defunct'),
     sl = require('..');
 
@@ -50,4 +51,16 @@ it('should be able to count a stream', 1, function(t, events) {
     .on('end', function () {
       t.end();
     });
+});
+
+it('should be able to limit a stream by bytes', 2, function(t, events) {
+  var count = 0;
+  events
+    .pipe(sl.limitBytes(1024))
+    .pipe(JSONStream.stringify('', '', ''))
+    .pipe(bl(function (err, data) {
+      t.notOk(err, 'no bl error');
+      t.ok(data.length < 1024, 'less than limit');
+      t.end();
+    }))
 });
