@@ -162,3 +162,35 @@ it('should be able to select certain fields', 1, function(t, events) {
       t.end();
     });
 });
+
+it('should be able to return the selected fields as an object', 1,
+  function(t, events) {
+    var results = [];
+    events
+      .pipe(sl.tail(5))
+      .pipe(sl.select(['properties.time', 'properties.distinct_id'], true))
+      .on('data', function (data) {
+        results.push(data);
+      })
+      .on('end', function () {
+        var expected = [
+          { properties:
+             { time: 1395896604,
+               distinct_id: '9f4533ce876717bc49b11fcb02015483' } },
+          { properties:
+             { time: 1395896604,
+               distinct_id: '9f4533ce876717bc49b11fcb02015483' } },
+          { properties:
+             { time: 1395896610,
+               distinct_id: '99766c220b35770d8fbe03f79cf326a7' } },
+          { properties:
+             { time: 1395896610,
+               distinct_id: 'b53293da8304e965c3d63a7b5bc7f0d4' } },
+          { properties:
+             { time: 1395896611,
+               distinct_id: '99766c220b35770d8fbe03f79cf326a7' } }
+        ];
+        t.deepEqual(results, expected, 'should get right rows');
+        t.end();
+      });
+  });
