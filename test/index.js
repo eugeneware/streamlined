@@ -124,7 +124,7 @@ it('should be able to count disctinct properties', 1, function(t, events) {
     });
 });
 
-it('should be able to return items that are missing a field',
+it('should be able to return items that are missing a field', 5,
   function(t, events) {
     var count = 0;
     events
@@ -141,3 +141,24 @@ it('should be able to return items that are missing a field',
         t.end();
       })
   });
+
+it('should be able to select certain fields', 1, function(t, events) {
+  var results = [];
+  events
+    .pipe(sl.tail(5))
+    .pipe(sl.select(['properties.time', 'properties.distinct_id']))
+    .on('data', function (data) {
+      results.push(data);
+    })
+    .on('end', function () {
+      var expected = [
+        [ 1395896604, '9f4533ce876717bc49b11fcb02015483' ],
+        [ 1395896604, '9f4533ce876717bc49b11fcb02015483' ],
+        [ 1395896610, '99766c220b35770d8fbe03f79cf326a7' ],
+        [ 1395896610, 'b53293da8304e965c3d63a7b5bc7f0d4' ],
+        [ 1395896611, '99766c220b35770d8fbe03f79cf326a7' ]
+      ];
+      t.deepEqual(results, expected, 'should get right rows');
+      t.end();
+    });
+});
