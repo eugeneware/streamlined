@@ -11,9 +11,6 @@ var it = redtape({
       fs.createReadStream(path.join(__dirname, 'fixtures', 'events.json'))
       .pipe(JSONStream.parse());
     cb(null, events);
-  },
-  afterEach: function (cb) {
-    cb();
   }
 });
 
