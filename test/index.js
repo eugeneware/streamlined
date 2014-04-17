@@ -43,3 +43,14 @@ it('should be able to generate a keystream', function(t, events) {
       t.end();
     });
 });
+
+it('should be able to count a stream', 1, function(t, events) {
+  events
+    .pipe(sl.count())
+    .on('data', function (data) {
+      t.deepEqual(data, { count: 1838 });
+    })
+    .on('end', function () {
+      t.end();
+    });
+});
