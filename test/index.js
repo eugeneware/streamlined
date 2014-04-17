@@ -287,3 +287,20 @@ it('should be able to map over a stream', 1, function(t, events) {
       t.end();
     });
 });
+
+it('should be able to produce a marketing funnel', 1, function(t, events) {
+  events
+    .pipe(sl.funnel('properties.distinct_id', 'event',
+      ['Viewed Sales Page', 'Clicked Add To Cart', 'Viewed Beta Invite', 'Submitted Beta Survey']))
+    .on('data', function (data) {
+      var expected = {
+        'Viewed Sales Page': 399,
+        'Clicked Add To Cart': 36,
+        'Viewed Beta Invite': 36,
+        'Submitted Beta Survey': 28 };
+      t.deepEqual(data, expected, 'Correct funnel results');
+    })
+    .on('end', function () {
+      t.end();
+    });
+});
