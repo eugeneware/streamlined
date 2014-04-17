@@ -77,3 +77,24 @@ it('should be able to limit a stream by bytes', 2, function(t, events) {
       t.end();
     }))
 });
+
+it('should be able to tail a stream', 6, function(t, events) {
+  var count = 0;
+  function counter() {
+    var count = 0;
+    return function (data) {
+      return count++;
+    };
+  }
+  events
+    .pipe(sl.key(counter()))
+    .pipe(sl.tail(5))
+    .on('data', function (data) {
+      t.ok(data.key >= 1833, 'last 5 items');
+      count++;
+    })
+    .on('end', function () {
+      t.equal(count, 5, 'only 5 events');
+      t.end();
+    });
+});
