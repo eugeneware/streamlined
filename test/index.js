@@ -123,3 +123,21 @@ it('should be able to count disctinct properties', 1, function(t, events) {
       t.end();
     });
 });
+
+it('should be able to return items that are missing a field',
+  function(t, events) {
+    var count = 0;
+    events
+      .pipe(sl.missing('properties.$browser'))
+      .on('data', function (data) {
+        count++;
+        t.assert(['$campaign_delivery', '$campaign_open']
+          .indexOf(data.event) !== -1, 'correct event');
+        t.assert(typeof data.properties.$browser === 'undefined',
+          'property is missing');
+      })
+      .on('end', function () {
+        t.equal(count, 2, 'only be two results');
+        t.end();
+      })
+  });
