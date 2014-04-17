@@ -9,4 +9,5 @@ module.exports = {
   select: require('./select'),
   pluck: require('./pluck'),
   where: require('./where'),
+  map: require('./map'),
 };
