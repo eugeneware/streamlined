@@ -194,3 +194,30 @@ it('should be able to return the selected fields as an object', 1,
         t.end();
       });
   });
+
+it('should be able to pluck out an object with a locator', 1,
+  function(t, events) {
+    var results = [];
+    events
+      .pipe(sl.missing('properties.$browser'))
+      .pipe(sl.pluck('properties'))
+      .on('data', function (data) {
+        results.push(data);
+      })
+      .on('end', function () {
+        var expected = [
+          { time: 1395773040,
+            distinct_id: '7eab3f90d1d3164608293f3d38759e4e',
+            campaign_id: 146099,
+            delivery_id: 90516639,
+            message_id: 51683,
+            message_type: 'email' },
+          { time: 1395773053,
+            distinct_id: '7eab3f90d1d3164608293f3d38759e4e',
+            campaign_id: 146099,
+            type: 'email' }
+        ];
+        t.deepEqual(results, expected, 'should just get the properties');
+        t.end();
+      });
+  });
