@@ -17,7 +17,7 @@ var it = redtape({
   }
 });
 
-it('should be able to limit a stream', function(t, events) {
+it('should be able to limit a stream', 1, function(t, events) {
   var count = 0;
   events
     .pipe(sl.limit(5))
@@ -30,7 +30,7 @@ it('should be able to limit a stream', function(t, events) {
     });
 });
 
-it('should be able to generate a keystream', function(t, events) {
+it('should be able to generate a keystream', 15, function(t, events) {
   events
     .pipe(sl.limit(5))
     .pipe(sl.key('properties.time', d.mul(1000), d.monotonic()))
