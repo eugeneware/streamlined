@@ -9,6 +9,4 @@ module.exports = {
   select: require('./select'),
   pluck: require('./pluck'),
   where: require('./where'),
-
-  selector: require('defunct/selector'),
 };
