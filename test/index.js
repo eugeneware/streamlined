@@ -4,7 +4,8 @@ var redtape = require('redtape'),
     JSONStream = require('JSONStream'),
     bl = require('bl'),
     d = require('defunct'),
-    sl = require('..');
+    sl = require('..'),
+    crypto = require('crypto');
 
 var it = redtape({
   beforeEach: function (cb) {
@@ -253,3 +254,36 @@ it('should be able to use a where clause mongodb/jsonquery syntax', 13,
         t.end();
       });
   });
+
+it('should be able to map over a stream', 1, function(t, events) {
+  function md5(data) {
+    var md5sum = crypto.createHash('md5');
+    md5sum.update(data);
+    return md5sum.digest('hex');
+  }
+
+  function md5browser(data) {
+    data.properties.$browser = md5(data.properties.$browser);
+    return data;
+  }
+
+  var results = [];
+  events
+    .pipe(sl.tail(5))
+    .pipe(sl.map(md5browser))
+    .pipe(sl.pluck('properties.$browser'))
+    .on('data', function (data) {
+      results.push(data);
+    })
+    .on('end', function () {
+      var expected = [
+        '986c37480b1f1c2e443504b38b6361b4',
+        '986c37480b1f1c2e443504b38b6361b4',
+        '986c37480b1f1c2e443504b38b6361b4',
+        'b4540da93e13d1326d68d2258e45446e',
+        '986c37480b1f1c2e443504b38b6361b4'
+      ];
+      t.deepEqual(results, expected, 'browser hashes correct');
+      t.end();
+    });
+});
