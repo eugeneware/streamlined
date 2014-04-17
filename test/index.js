@@ -221,3 +221,19 @@ it('should be able to pluck out an object with a locator', 1,
         t.end();
       });
   });
+
+it('should be able to use a where clause (selector, needle)', 13,
+  function(t, events) {
+    var count = 0;
+    events
+      .pipe(sl.limit(50))
+      .pipe(sl.where('properties.$browser', 'Chrome'))
+      .on('data', function (data) {
+        t.equal(data.properties.$browser, 'Chrome');
+        count++;
+      })
+      .on('end', function () {
+        t.equal(count, 12, 'only 12 events');
+        t.end();
+      });
+  });
