@@ -10,4 +10,5 @@ module.exports = {
   pluck: require('./pluck'),
   where: require('./where'),
   map: require('./map'),
+  funnel: require('./funnel')
 };
