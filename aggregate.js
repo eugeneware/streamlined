@@ -2,10 +2,13 @@ var through2 = require('through2'),
     selector = require('defunct/selector');
 
 module.exports = aggregate;
-function aggregate(selectorExpr, fns) {
+function aggregate(selectorExpr, fns, dropUndefined) {
   if (typeof fns === 'function') {
     // single arg
     fns = { single: fns };
+  }
+  if (typeof dropUndefined === 'undefined') {
+    dropUndefined = false;
   }
 
   var s = through2.obj(write, end);
@@ -16,12 +19,20 @@ function aggregate(selectorExpr, fns) {
   function write(data, enc, cb) {
     var val = locator(data);
     if (typeof val !== undefined) {
-      accumulator[val] = Object.keys(fns)
+
+      var newVal = Object.keys(fns)
         .reduce(function (acc, key) {
           var fn = fns[key];
-          acc[key] = fn(acc[key], data, val);
+          var newVal = fn(acc[key], data, val);
+          if (typeof newVal !== 'undefined' || dropUndefined === false) {
+            acc[key] = newVal;
+          }
           return acc;
         }, accumulator[val] || {});
+
+      if (Object.keys(newVal).length || dropUndefined === false) {
+        accumulator[val] = newVal;
+      }
     }
     cb();
   }
