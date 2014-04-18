@@ -295,6 +295,94 @@ myObjectModeStream()
    */
 ```
 
+### Perform Aggregate Calculations
+
+Used in conjunction with some simple aggregating functions (such as those
+provided by
+[defunct-aggregates](https://github.com/eugeneware/defunct-aggregates), but
+you can easily write your own), you can do the object-stream equivalent of
+SQL SUMs and COUNTs, and MAX/MINs, here's a SUM:
+
+``` js
+var dagg = require('defunct-aggregates'),
+    sl = require('streamlined');
+myObjectStream()
+  .pipe(sl.aggregate('properties.$initial_referring_domain', dagg.sum('properties.time')))
+  .on('data', function (data) {
+    console.log(data);
+    /*
+       {
+        '$direct': 2465011296034,
+        'www.something.com': 8374730552,
+        'mail.qq.com': 18145722876,
+        'cwebmail.mail.163.com': 2791450358,
+        'm.email.seznam.cz': 4187199003,
+        undefined: 2791546093,
+        'm.facebook.com': 2791563670,
+        'www.google.co.uk': 2791596886,
+        'nm20.abv.bg': 2791603002,
+        'www.google.com': 18146059483,
+        'webmailb.netzero.net': 13958396912,
+        'webmail.kitchenrefacers.ca': 4187590206,
+        'www.ekit.com': 2791762707,
+        'webmail.myway.com': 13958909358,
+        'poczta.wp.pl': 2791781736 }
+     */
+  });
+```
+
+The `#aggregate` function takes two arguments. The first is a locator expression
+that will locate the field to GROUP BY. The second is an aggregating function.
+
+The signature of the aggregating function is:
+
+``` js
+function (accumulator, data, [columnn name]) {
+  // modify the accumulator
+  return accumulator;
+}
+```
+
+To see more about how these are implemented, check out
+[defunct-aggregates](https://github.com/eugeneware/defunct-aggregates).
+
+If the second argument is an map of property to functions, then you can do
+multiple aggregations:
+
+``` js
+var sl = require('streamlined');
+myObjectStream()
+  .pipe(sl.aggregate('properties.$initial_referring_domain', {
+    sum: sum('properties.time'),
+    max: max('properties.time')
+  }))
+  .on('data', function (data) {
+    console.log(data);
+    /*
+     { '$direct': { sum: 2465011296034, max: 1395896611 },
+       'www.something.com': { sum: 8374730552, max: 1395871232 },
+       'mail.qq.com': { sum: 18145722876, max: 1395893241 },
+       'cwebmail.mail.163.com': { sum: 2791450358, max: 1395725179 },
+       'm.email.seznam.cz': { sum: 4187199003, max: 1395733001 },
+       undefined: { sum: 2791546093, max: 1395773053 },
+       'm.facebook.com': { sum: 2791563670, max: 1395781835 },
+       'www.google.co.uk': { sum: 2791596886, max: 1395798443 },
+       'nm20.abv.bg': { sum: 2791603002, max: 1395801501 },
+       'www.google.com': { sum: 18146059483, max: 1395895873 },
+       'webmailb.netzero.net': { sum: 13958396912, max: 1395839884 },
+       'webmail.kitchenrefacers.ca': { sum: 4187590206, max: 1395863906 },
+       'www.ekit.com': { sum: 2791762707, max: 1395881354 },
+       'webmail.myway.com': { sum: 13958909358, max: 1395891210 },
+       'poczta.wp.pl': { sum: 2791781736, max: 1395890868 } };
+    */
+```
+
+The last argument to the `#aggregate` function is a boolean which you can use
+to ignore undefined results (ie. key values of `undefined`), or whether you
+want them there. The default is `false` (show the `undefined`s).
+
+Who needs SQL, right?
+
 ### Produce marketing funnel statistics
 
 Given the path of a user ID, and the path of the 'Event' that you wish to report
