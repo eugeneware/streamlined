@@ -11,6 +11,8 @@
     "url": "https://github.com/eugeneware/streamlined"
   },
   "keywords": [
+    "leveldb",
+    "levelup",
     "stream",
     "streams",
     "streaming",
