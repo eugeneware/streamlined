@@ -437,4 +437,102 @@ it('should be able to aggregate over items (multiple)', 1, function(t, events) {
     .on('end', function () {
       t.end();
     });
+
+  it('should be able to aggregate and keep non-matching items', 1,
+    function(t, events) {
+      function funnel(userSelector, events) {
+        var userLocator = d.selector(userSelector);
+        var users = {}
+        return function (acc, data, evt) {
+          var userId = userLocator(data);
+          users[userId] = users[userId] || 0;
+          var funnelEvent = events.indexOf(evt);
+
+          if (funnelEvent !== -1) {
+            // if event is in right order then increment stats
+            if (funnelEvent === users[userId]) {
+              acc = acc || 0;
+              users[userId] = funnelEvent + 1;
+              acc++;
+            }
+          }
+
+          return acc;
+        }
+      }
+
+      events
+        .pipe(sl.aggregate('event', funnel('properties.distinct_id',
+          ['Viewed Sales Page',
+           'Clicked Add To Cart',
+           'Viewed Beta Invite',
+           'Submitted Beta Survey'])))
+        .on('data', function (data) {
+          var expected = {
+            'Viewed Sales Page': 399,
+            'Viewed Page': undefined,
+            'Clicked Add To Cart': 36,
+            'Viewed Beta Invite': 36,
+            'Clicked Joined Beta': undefined,
+            'Viewed Beta Survey': undefined,
+            'Beta Signup Success': undefined,
+            'Submitted Beta Survey': 28,
+            '$campaign_delivery': undefined,
+            '$campaign_open': undefined,
+            'Something Login': undefined,
+            'Something Create New Script': undefined,
+            'Something Script Step': undefined,
+            'Something Script Review': undefined,
+            'Something Script Copied': undefined,
+            'Something Completed Script': undefined,
+            'Something Set Password': undefined };
+          t.deepEqual(data, expected, 'should have undefined');
+        })
+        .on('end', function () {
+          t.end();
+        });
+    });
+
+  it('should be able to aggregate and drop non-matching items', 1,
+    function(t, events) {
+      function funnel(userSelector, events) {
+        var userLocator = d.selector(userSelector);
+        var users = {}
+        return function (acc, data, evt) {
+          var userId = userLocator(data);
+          users[userId] = users[userId] || 0;
+          var funnelEvent = events.indexOf(evt);
+
+          if (funnelEvent !== -1) {
+            acc = acc || 0;
+            // if event is in right order then increment stats
+            if (funnelEvent === users[userId]) {
+              users[userId] = funnelEvent + 1;
+              acc++;
+            }
+          }
+
+          return acc;
+        }
+      }
+
+      events
+        .pipe(sl.aggregate('event',
+          funnel('properties.distinct_id',
+                  ['Viewed Sales Page',
+                   'Clicked Add To Cart',
+                   'Viewed Beta Invite',
+                   'Submitted Beta Survey']), true))
+        .on('data', function (data) {
+          var expected = {
+            'Viewed Sales Page': 399,
+            'Clicked Add To Cart': 36,
+            'Viewed Beta Invite': 36,
+            'Submitted Beta Survey': 28 };
+          t.deepEqual(data, expected, 'should not have undefineds');
+        })
+        .on('end', function () {
+          t.end();
+        });
+    });
 });
