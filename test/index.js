@@ -288,6 +288,47 @@ it('should be able to map over a stream', 1, function(t, events) {
     });
 });
 
+it('should be able to apply multiple maps over a stream', 1,
+  function(t, events) {
+    function md5(data) {
+      var md5sum = crypto.createHash('md5');
+      md5sum.update(data);
+      return md5sum.digest('hex');
+    }
+
+    function md5browser(data) {
+      data.properties.$browser = md5(data.properties.$browser);
+      return data;
+    }
+
+    function truncate(n) {
+      return function (data) {
+        data.properties.$browser = data.properties.$browser.substr(0, n);
+        return data;
+      };
+    };
+
+    var results = [];
+    events
+      .pipe(sl.tail(5))
+      .pipe(sl.map(md5browser, truncate(8)))
+      .pipe(sl.pluck('properties.$browser'))
+      .on('data', function (data) {
+        results.push(data);
+      })
+      .on('end', function () {
+        var expected = [
+          '986c3748',
+          '986c3748',
+          '986c3748',
+          'b4540da9',
+          '986c3748',
+        ];
+        t.deepEqual(results, expected, 'truncated browser hashes correct');
+        t.end();
+      });
+  });
+
 it('should be able to produce a marketing funnel', 1, function(t, events) {
   events
     .pipe(sl.funnel('properties.distinct_id', 'event',
