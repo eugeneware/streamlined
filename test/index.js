@@ -345,3 +345,96 @@ it('should be able to produce a marketing funnel', 1, function(t, events) {
       t.end();
     });
 });
+
+it('should be able to aggregate over items (single)', 1, function(t, events) {
+  function sum(selectorExpr) {
+    var locator = d.selector(selectorExpr);
+    return function (acc, data) {
+      acc = acc || 0;
+      var val = locator(data);
+      if (typeof val === 'number') {
+        acc += val;
+      }
+      return acc;
+    };
+  }
+
+  events
+    .pipe(sl.aggregate('properties.$initial_referring_domain', sum('properties.time')))
+    .on('data', function (data) {
+      var expected = {
+        '$direct': 2465011296034,
+        'www.something.com': 8374730552,
+        'mail.qq.com': 18145722876,
+        'cwebmail.mail.163.com': 2791450358,
+        'm.email.seznam.cz': 4187199003,
+        undefined: 2791546093,
+        'm.facebook.com': 2791563670,
+        'www.google.co.uk': 2791596886,
+        'nm20.abv.bg': 2791603002,
+        'www.google.com': 18146059483,
+        'webmailb.netzero.net': 13958396912,
+        'webmail.kitchenrefacers.ca': 4187590206,
+        'www.ekit.com': 2791762707,
+        'webmail.myway.com': 13958909358,
+        'poczta.wp.pl': 2791781736 };
+      t.deepEqual(data, expected, 'correct sum');
+    })
+    .on('end', function () {
+      t.end();
+    });
+});
+
+it('should be able to aggregate over items (multiple)', 1, function(t, events) {
+  function sum(selectorExpr) {
+    var locator = d.selector(selectorExpr);
+    return function (acc, data) {
+      acc = acc || 0;
+      var val = locator(data);
+      if (typeof val === 'number') {
+        acc += val;
+      }
+      return acc;
+    };
+  }
+
+  function max(selectorExpr) {
+    var locator = d.selector(selectorExpr);
+    return function (acc, data) {
+      var val = locator(data);
+      if (typeof val === 'number') {
+        acc = acc || val;
+        acc = Math.max(acc, val);
+      }
+      return acc;
+    };
+  }
+
+  events
+    .pipe(sl.aggregate('properties.$initial_referring_domain', {
+      sum: sum('properties.time'),
+      max: max('properties.time')
+    }))
+    .on('data', function (data) {
+      var expected = {
+        '$direct': { sum: 2465011296034, max: 1395896611 },
+         'www.something.com': { sum: 8374730552, max: 1395871232 },
+         'mail.qq.com': { sum: 18145722876, max: 1395893241 },
+         'cwebmail.mail.163.com': { sum: 2791450358, max: 1395725179 },
+         'm.email.seznam.cz': { sum: 4187199003, max: 1395733001 },
+         undefined: { sum: 2791546093, max: 1395773053 },
+         'm.facebook.com': { sum: 2791563670, max: 1395781835 },
+         'www.google.co.uk': { sum: 2791596886, max: 1395798443 },
+         'nm20.abv.bg': { sum: 2791603002, max: 1395801501 },
+         'www.google.com': { sum: 18146059483, max: 1395895873 },
+         'webmailb.netzero.net': { sum: 13958396912, max: 1395839884 },
+         'webmail.kitchenrefacers.ca': { sum: 4187590206, max: 1395863906 },
+         'www.ekit.com': { sum: 2791762707, max: 1395881354 },
+         'webmail.myway.com': { sum: 13958909358, max: 1395891210 },
+         'poczta.wp.pl': { sum: 2791781736, max: 1395890868 } };
+      t.deepEqual(data, expected, 'correct sum and max');
+    })
+    .on('end', function () {
+      t.end();
+    });
+});
