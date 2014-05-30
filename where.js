@@ -13,6 +13,8 @@ function where(selectorExpr, needle) {
     predicate = function (data) {
       return jsonquery.match(data, selectorExpr);
     };
+  } else if (typeof needle === 'undefined') {
+    predicate = selector(selectorExpr);
   } else {
     var locator = selector(selectorExpr);
     predicate = function (data) {
