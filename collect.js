@@ -4,11 +4,12 @@ function noop() { }
 
 module.exports = collect;
 function collect(onEnd) {
+  var fns = Array.prototype.slice.call(arguments);
   var s = through2.obj(write, end);
   var results = [];
   var err = null;
 
-  onEnd = (typeof onEnd === 'function') ? onEnd : noop;
+  onEnd = fns.length ? fns : [ noop ];
 
   function write(data, enc, cb) {
     results.push(data);
@@ -21,7 +22,9 @@ function collect(onEnd) {
   });
 
   function end() {
-    onEnd(err, results);
+    fns.forEach(function (fn) {
+      fn(err, results);
+    });
   }
 
   return s;
