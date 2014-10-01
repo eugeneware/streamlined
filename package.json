@@ -1,6 +1,6 @@
 {
   "name": "streamlined",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Collection of helper streams to deal with mapping/transforming object streams",
   "main": "index.js",
   "scripts": {
