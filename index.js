@@ -12,6 +12,7 @@ module.exports = {
   where: require('./where'),
   map: require('./map'),
   data: require('./data'),
+  collect: require('./collect'),
   aggregate: require('./aggregate'),
   funnel: require('./funnel')
 };

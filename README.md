@@ -322,6 +322,30 @@ myObjectModeStream()
 
 You can pass a second parameter to `#data` which gets called on the `end` event.
 
+### Collect all the objects in a stream into a single array
+
+Often you want to simply collect all the items in a stream into a single array
+for batch processing. You can use `#collect` for this:
+
+``` js
+var sl = require('streamlined');
+
+myObjectModeStream()
+  .pipe(sl.map(md5browser))
+  .pipe(sl.collect(console.log));
+
+  // will print out an array of the md5 of the browser values
+  /**
+    [ '986c37480b1f1c2e443504b38b6361b4',
+      '986c37480b1f1c2e443504b38b6361b4',
+      '986c37480b1f1c2e443504b38b6361b4',
+      'b4540da93e13d1326d68d2258e45446e',
+      '986c37480b1f1c2e443504b38b6361b4' ]
+   */
+```
+
+You can pass a second parameter to `#data` which gets called on the `end` event.
+
 ### Perform Aggregate Calculations
 
 Used in conjunction with some simple aggregating functions (such as those

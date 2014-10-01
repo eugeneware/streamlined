@@ -329,6 +329,23 @@ it('should be able to get called for each data event on a stream', 1,
       }));
   });
 
+it('should be able to collect all the objects in a stream', 1,
+  function(t, events) {
+    events
+      .pipe(sl.tail(5))
+      .pipe(sl.pluck('properties.distinct_id'))
+      .pipe(sl.collect(function(err, results) {
+        var expected = [
+          '9f4533ce876717bc49b11fcb02015483',
+          '9f4533ce876717bc49b11fcb02015483',
+          '99766c220b35770d8fbe03f79cf326a7',
+          'b53293da8304e965c3d63a7b5bc7f0d4',
+          '99766c220b35770d8fbe03f79cf326a7' ];
+        t.deepEqual(results, expected, 'collection worked');
+        t.end();
+      }));
+  });
+
 it('should be able to apply multiple maps over a stream', 1,
   function(t, events) {
     function md5(data) {

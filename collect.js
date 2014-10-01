@@ -2,20 +2,26 @@ var through2 = require('through2');
 
 function noop() { }
 
-module.exports = data;
-function data(onData, onEnd) {
+module.exports = collect;
+function collect(onEnd) {
   var s = through2.obj(write, end);
-  onData = (typeof onData === 'function') ? onData : noop;
+  var results = [];
+  var err = null;
+
   onEnd = (typeof onEnd === 'function') ? onEnd : noop;
 
   function write(data, enc, cb) {
-    onData(data);
+    results.push(data);
     this.push(data);
     cb();
   }
 
+  s.on('error', function (err_) {
+    err = err_;
+  });
+
   function end() {
-    onEnd();
+    onEnd(err, results);
   }
 
   return s;
