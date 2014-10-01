@@ -295,6 +295,33 @@ myObjectModeStream()
    */
 ```
 
+### Simple iterations and processing over every object in an object stream
+
+Say you want to transform every object in a stream. Simply provide a transform
+function to the `#map` stream:
+
+Often all you want to do is just iterate and call a function on every item
+in a stream:
+
+``` js
+var sl = require('streamlined');
+
+myObjectModeStream()
+  .pipe(sl.map(md5browser))
+  .pipe(sl.data(console.log));
+
+  // will print out the md5 of the browser values
+  /**
+    986c37480b1f1c2e443504b38b6361b4
+    986c37480b1f1c2e443504b38b6361b4
+    986c37480b1f1c2e443504b38b6361b4
+    b4540da93e13d1326d68d2258e45446e
+    986c37480b1f1c2e443504b38b6361b4
+   */
+```
+
+You can pass a second parameter to `#data` which gets called on the `end` event.
+
 ### Perform Aggregate Calculations
 
 Used in conjunction with some simple aggregating functions (such as those
