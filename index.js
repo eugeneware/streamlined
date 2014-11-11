@@ -14,5 +14,6 @@ module.exports = {
   data: require('./data'),
   collect: require('./collect'),
   aggregate: require('./aggregate'),
-  funnel: require('./funnel')
+  funnel: require('./funnel'),
+  stringify: require('./stringify')
 };

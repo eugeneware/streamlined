@@ -442,7 +442,7 @@ using the `#funnel` stream will generate a report of how many user went through
 every stage of the funnel:
 
 ``` js
-var sl = require('streamlined'),
+var sl = require('streamlined');
 myObjectModeStream()
   .pipe(sl.funnel(
     'properties.distinct_id', // path to the user id
@@ -459,4 +459,19 @@ myObjectModeStream()
      */
   });
 });
+```
+
+## Simple Helper Streams
+
+### sl.stringify
+
+Makes it easy to output an object streams as CRLF JSON:
+
+``` js
+var sl = require('streamlined');
+myObjectModeStream()
+  .pipe(sl.stringify())
+  .pipe(process.stdout)
+
+// prints each object to stdout JSON.stringified with a new line character
 ```

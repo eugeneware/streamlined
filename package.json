@@ -35,9 +35,10 @@
     "defunct": "^1.0.1"
   },
   "devDependencies": {
-    "redtape": "^1.0.0",
-    "tape": "^2.12.3",
     "JSONStream": "^0.9.0",
-    "bl": "^0.9.1"
+    "bl": "^0.9.1",
+    "concat-stream": "^1.4.6",
+    "redtape": "^1.0.0",
+    "tape": "^3.0.2"
   }
 }

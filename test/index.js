@@ -5,6 +5,7 @@ var redtape = require('redtape'),
     bl = require('bl'),
     d = require('defunct'),
     sl = require('..'),
+    concat = require('concat-stream'),
     crypto = require('crypto');
 
 var it = redtape({
@@ -593,4 +594,18 @@ it('should be able to aggregate over items (multiple)', 1, function(t, events) {
           t.end();
         });
     });
+});
+
+it.only('should be able to stringify an object stream', 1, function(t, events) {
+  events
+    .pipe(sl.limit(3))
+    .pipe(sl.stringify()).pipe(concat(function (data) {
+      var expected = [
+        '{"event":"Viewed Sales Page","properties":{"time":1395714685,"distinct_id":"7eab3f90d1d3164608293f3d38759e4e","$browser":"Safari","$city":"Malvern","$initial_referrer":"$direct","$initial_referring_domain":"$direct","$os":"Mac OS X","$region":"Victoria","first_wp_contact":"2014-03-24T17:00:00","first_wp_page":"","first_wp_url":"/","mp_country_code":"AU","mp_lib":"web","utm_content":"762","utm_medium":"email","utm_source":"vid-marketing2","utm_campaign":"Something Marketing Launch 2"}}',
+        '{"event":"Viewed Page","properties":{"time":1395714685,"distinct_id":"7eab3f90d1d3164608293f3d38759e4e","$browser":"Safari","$city":"Malvern","$initial_referrer":"$direct","$initial_referring_domain":"$direct","$os":"Mac OS X","$region":"Victoria","first_wp_contact":"2014-03-24T17:00:00","first_wp_page":"","first_wp_url":"/","mp_country_code":"AU","mp_lib":"web","page name":"","page url":"/","utm_content":"762","utm_medium":"email","utm_source":"vid-marketing2","utm_campaign":"Something Marketing Launch 2"}}',
+        '{"event":"Clicked Add To Cart","properties":{"time":1395714747,"distinct_id":"7eab3f90d1d3164608293f3d38759e4e","$browser":"Safari","$city":"Malvern","$initial_referrer":"$direct","$initial_referring_domain":"$direct","$os":"Mac OS X","$region":"Victoria","first_wp_contact":"2014-03-24T17:00:00","first_wp_page":"","first_wp_url":"/","mp_country_code":"AU","mp_lib":"web","utm_content":"762","utm_medium":"email","utm_source":"vid-marketing2","url":"http://noblesamurai.com/c/subscribe-to-something-launch-3","utm_campaign":"Something Marketing Launch 2"}}',
+        ''].join('\n');
+    t.equal(expected, data);
+    t.end();
+  }));
 });
